@@ -5,7 +5,7 @@
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-  Start from scratch starter project
+  Vanity Number Generator
 
 # Transform section specifies one or more macros that AWS CloudFormation uses to process your template
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
@@ -24,13 +24,122 @@ Globals:
 Parameters:
   AppId:
     Type: String
+  TableName:
+    Type: String
+    Default: vanity_numbers_prod
+  ApiGatewayName:
+    Type: String
+    Default: vanity_api_gateway
+  ApiGatewayHttpMethod:
+    Type: String
+    Default: GET
+  
 
 # Resources declares the AWS resources that you want to include in the stack
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
+  MyApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: Vanity Number Api Gateway
+      StageName: Staging
+
+  vanityNumbersDbTable:
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions: 
+        - AttributeName: customerPhone
+          AttributeType: S
+        - AttributeName: lastUpdated
+          AttributeType: S
+      KeySchema: 
+        - AttributeName: customerPhone
+          KeyType: HASH
+        - AttributeName: lastUpdated
+          KeyType: RANGE
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      TableName: !Ref TableName
+      Tags: 
+        - Key: Creator
+          Value: Michael
+        - Key: Table Name
+          Value: Vanity Numbers
   # Each Lambda function is defined by properties:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
+  vanitynumbergenerator:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: src/handlers/generate-vanity-number.generateNumberHandler
+      Runtime: nodejs14.x
+      CodeUri: .
+      Description: Take a phone number and generate 3 vanity numbers, and then select the best one.
+      MemorySize: 128
+      Timeout: 3
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - arn:aws:iam::345859732721:policy/SamBucketAccess
+
+  insertgeneratednumbers:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler:  src/handlers/insert-vanity-number.insertNumberHandler
+      Runtime: nodejs14.x
+      CodeUri: .
+      Description: Insert the vanity number options and other info to the caller's corresponding DynamoDB record.
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableName
+      MemorySize: 128
+      Timeout: 10
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AmazonDynamoDBFullAccess
+        - arn:aws:iam::345859732721:policy/SamBucketAccess
+
+  getCustomerData:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler:  src/handlers/check-customer-data.getCustomerDataHandler
+      Runtime: nodejs14.x
+      CodeUri: .
+      Description: Return the data from the dynamoDB lookukp for the caller's phone number.
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableName
+      MemorySize: 128
+      Timeout: 10
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AmazonDynamoDBFullAccess
+        - arn:aws:iam::345859732721:policy/SamBucketAccess
+
+  getCallHistory:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler:  src/handlers/get-call-history.getCallHistoryHandler
+      Runtime: nodejs14.x
+      CodeUri: .
+      Description: Return the 5 most recent records in the dynamoDB table.
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableName
+      Events:
+        VanityNumberApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyApiGateway
+            Path: /call-history
+            Method: GET
+      MemorySize: 128
+      Timeout: 10
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AmazonDynamoDBFullAccess
+        - arn:aws:iam::345859732721:policy/SamBucketAccess
+        
   # This is a Lambda function config associated with the source code: hello-from-lambda.js
   helloFromLambdaFunction:
     Type: AWS::Serverless::Function
