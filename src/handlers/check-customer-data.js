@@ -1,16 +1,15 @@
-/**
- * @description - this lambda gets the caller's phone number and checks
- *                the DB for any existing data for that number
- */
+// this lambda gets the caller's phone number and checks
+// the DB for any existing data for that number
 
 // IMPORTS
-var AWS = require('aws-sdk');
-var docClient = new AWS.DynamoDB.DocumentClient();
+const AWS = require('aws-sdk');
+const docClient = new AWS.DynamoDB.DocumentClient();
 
-// LITERALS
+// CONSTANTS
 const NUMBER_OPTIONS = 'numberOptions';
 const HAS_CUSTOMER_DATA_FLAG = 'hasCustomerDataFlag';
 
+// FUNCTIONS
 /**
  * 
  * @param {*} data 
@@ -23,7 +22,7 @@ function getMostRecentResponse (data) {
 /**
  * 
  * @param {object} data - DynamoDB Item returned from the vanity_numbers table
- * @returns {object} - flattens the object so it has only one level of properties
+ * @returns {object} - a new, flattened object with the options list extracted to individual properties
  *                     (nested objects are not supported in Connect Contact Flows)
  */
 function simplifyDataResponse (data) {
@@ -86,10 +85,15 @@ function getCustomerData (customerPhone, callback) {
     
 }
 
+// HANDLER
 exports.getCustomerDataHandler = function(event, context, callback) {
-	const customerPhone = event.Details.ContactData.CustomerEndpoint.Address;
-    
-    if (!customerPhone) callback(new Error('could not find customer phone in event details'));
-    
-	getCustomerData(customerPhone, callback);
+    try {
+        const customerPhone = event.Details.ContactData.CustomerEndpoint.Address;
+        if (customerPhone)
+            getCustomerData(customerPhone, callback);
+        else
+            callback(new Error('missing customer phone from params'));
+    } catch (e) {
+        callback(new Error('error getting customer data: ' + e.message))
+    }
 }

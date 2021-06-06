@@ -1,17 +1,17 @@
-/**
- * @description - this lambda will get the caller's phone number and use it to generate
- *                5 vanity numbers, and then choose the best one
- */
+// this lambda gets the caller's phone number and uses it to generate
+// 5 vanity numbers, and then chooses the best one
 
+// IMPORTS
 const alphabetMap = require('../util/alphabetMap')
 const vowelList = require('../util/vowelList')
 
+// FUNCTIONS
 /**
  * 
  * @param {string[]} suffixOptions - list of 5 possible vanity numbers 
- * @returns {string} - the BEST* vanity number (*for now, the one with the most vowels, inluding y because y not)
+ * @returns {string} - the BEST* vanity number (*for now, BEST means the option with the most vowels, inluding y because y not)
  * 
- * @todo - BEST could mean the number wih the longest english word. And we could enhance the 
+ * @todo - BEST could mean the number with the longest english word. And we could enhance the 
  * suffix generator to only suggest a vanity string if it has a minimum length word)
  */
 function getBestSuffix (suffixOptions) {
@@ -76,7 +76,7 @@ function getVanityDigits (customerPhone) {
     const splitIndex = customerPhone.length - 7;
     const lastSeven = customerPhone.substring(splitIndex);
     const numberPrefix = customerPhone.substring(0, splitIndex);
-    
+
     return [numberPrefix, lastSeven]
 }
 
@@ -114,12 +114,17 @@ function generateVanityNumber (customerPhone) {
     }
 }
 
+// HANDLER
 exports.generateNumberHandler = function(event, context, callback) {
-    const customerPhone = event.Details.ContactData.CustomerEndpoint.Address;
-    
-    if (!customerPhone) callback(new Error('could not find customer phone in event details'));
-	
-	const result = generateVanityNumber(customerPhone);
-
-	callback(null, result);
+    try {
+        const customerPhone = event.Details.ContactData.CustomerEndpoint.Address;
+        if (customerPhone) {
+            const vanityNumber = generateVanityNumber(customerPhone);
+            callback(null, vanityNumber);
+        } else {
+            callback(new Error('missing customer phone from params'));
+        }
+    } catch (e) {
+        callback(new Error('error generating vanity number: ' + e.message));
+    }
 }

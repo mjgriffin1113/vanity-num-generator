@@ -3,11 +3,14 @@
     "description": "Start from scratch starter project",
     "version": "0.0.1",
     "private": true,
-    "dependencies": {},
     "devDependencies": {
+        "aws-sdk": "^2.921.0",
         "jest": "^25.4.0"
     },
     "scripts": {
-        "test": "jest"
+        "test": "jest --setupFiles dotenv/config"
+    },
+    "dependencies": {
+        "dotenv": "^10.0.0"
     }
 }

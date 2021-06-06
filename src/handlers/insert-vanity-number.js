@@ -4,9 +4,10 @@
  */
 
 // IMPORTS
-var AWS = require('aws-sdk');
-var docClient = new AWS.DynamoDB.DocumentClient();
+const AWS = require('aws-sdk');
+const docClient = new AWS.DynamoDB.DocumentClient();
 
+// FUNCTIONS
 /**
  * 
  * @param {object} data - data to be validated
@@ -23,7 +24,7 @@ function validateParams (data) {
  */
 function insertVanityNumber (data, callback) {
     
-    var params = {
+    const params = {
         TableName: process.env.TABLE_NAME,
         Item: {
             'customerPhone': data.customerPhone,
@@ -42,11 +43,16 @@ function insertVanityNumber (data, callback) {
     });
 }
 
+// HANDLER
 exports.insertNumberHandler = function(event, context, callback) {
-    const data = event.Details.Parameters;
-
-    if (!data) callback(new Error('missing input parameters from event details'))
-    if (!validateParams(data)) callback(new Error('missing required fields from input parameters'))
-	
-	insertVanityNumber(data, callback);
+    try {
+        const data = event.Details.Parameters;
+        // validate and insert the data
+        if (validateParams(data))
+            insertVanityNumber(data, callback);
+        else
+            callback(new Error('invalid params for data insert'));
+    } catch (e) {
+        callback('error inserting the vanity number data: ' + e.message);
+    }
 }

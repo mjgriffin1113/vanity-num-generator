@@ -3,9 +3,10 @@
  */
 
 // IMPORTS
-var AWS = require('aws-sdk');
-var docClient = new AWS.DynamoDB.DocumentClient();
+const AWS = require('aws-sdk');
+const docClient = new AWS.DynamoDB.DocumentClient();
 
+// FUNCTIONS
 /**
  * 
  * @param {Function} callback - lambda callback function
@@ -13,7 +14,7 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 function getCallHistory (callback) {
     // going to scan the db and then filter and sort the results
     // this is a shortcut/hacky
-    var params = {
+    const params = {
         TableName: process.env.TABLE_NAME
     };
 
@@ -46,6 +47,7 @@ function getCallHistory (callback) {
     });
 }
 
+// HANDLER
 exports.getCallHistoryHandler = function(event, context, callback) {
 	getCallHistory(callback);
 }
