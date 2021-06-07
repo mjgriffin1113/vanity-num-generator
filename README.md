@@ -76,7 +76,7 @@ The bot needs to have two intents and their corresponding utterance list:
 - KeepExistingOptions: [won, one]
 
 Ensure `Return parameters to client` under Fulfillment section is checked for both intents\
-Build and publis the bot, and remember to add it to the contact flow settings on the Amazon Connect service (in AWS console, not AC portal)
+Build and publish the bot, and remember to add it to the contact flow settings on the Amazon Connect service (in AWS console, not AC portal)
 
 ## Local and Automated Testing
 
