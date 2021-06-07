@@ -55,7 +55,7 @@ This project contains source code and supporting files for the serverless applic
 This project includes the following files and folders:
 
 - src - Code for the application's Lambda function.
-- \_\_tests__ - Unit tests for the application code.
+- test - Tests for the application code.
 - template.yml - A SAM template that defines the application's AWS resources.
 - buildspec.yml -  A build specification file that tells AWS CodeBuild how to create a deployment package for the function.
 
@@ -182,7 +182,7 @@ Requirements:
 
 * Node.js - [Install Node.js 10](https://nodejs.org/en/), including the npm package management tool.
 
-Tests are defined in the \_\_tests__ folder in this project. Use `npm` to install the [Jest test framework](https://jestjs.io/) and run unit tests.
+Tests are defined in the `test` folder in this project. Use `npm` to install the [Jest test framework](https://jestjs.io/) and run unit tests.
 
 ```bash
 my-application$ npm install

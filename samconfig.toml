@@ -3,8 +3,8 @@ version = 0.1
 [default.deploy]
 [default.deploy.parameters]
 stack_name = "vanity-num-generator"
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1t2l46m81x2kc"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1lj23k9ysabj7"
 s3_prefix = "vanity-num-generator"
-region = "us-east-1"
+region = "us-east-2"
 capabilities = "CAPABILITY_IAM"
 parameter_overrides = "AppId=\"vanity-num-generator\" TableName=\"vanity_numbers_prod\" ApiGatewayName=\"vanity_api_gateway\" ApiGatewayHttpMethod=\"GET\" SamBucketPolicyARN=\"arn:aws:iam::345859732721:policy/SamBucketAccess\""
