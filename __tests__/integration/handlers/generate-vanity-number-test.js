@@ -1,22 +1,25 @@
 // IMPORTS
-const lambda = require('../../../src/handlers/check-customer-data.js');
+const lambda = require('../../../src/handlers/generate-vanity-number');
 const event = require('../../../events/AmazonConnectEvent.json');
+const { expectedCustomerPhone } = require('../util/constants');
 
 // TESTS
-const checkCustomerDataTests = () => {    
+const generateVanityNumberTest = () => {    
     // This test invokes the hello-from-lambda Lambda function and compares the result
-    it('test the check customer data lambda handler', async (done) => {
+    it('test the generate vanity number lambda handler', async (done) => {
         const callbackFn = (err, data) => {
             if (err) done(err);
             try {
-                expect(data).toBeTruthy();
+                expect(data.vanityNumber).toBeTruthy();
+                expect(data.option5).toBeTruthy();
+                expect(data.customerPhone).toBe(expectedCustomerPhone);
                 done();
             } catch (error) {
                 done(error);
             }
         };
 
-        lambda.getCustomerDataHandler(event, null, callbackFn);
+        lambda.generateNumberHandler(event, null, callbackFn);
     });
 
     it('test bad input', async (done) => {
@@ -29,8 +32,8 @@ const checkCustomerDataTests = () => {
             }
         };
 
-        lambda.getCustomerDataHandler({}, null, callbackFn);
+        lambda.generateNumberHandler({}, null, callbackFn);
     });
 };
 
-module.exports = checkCustomerDataTests;
+module.exports = generateVanityNumberTest;

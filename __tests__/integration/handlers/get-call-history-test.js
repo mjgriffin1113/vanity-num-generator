@@ -1,6 +1,7 @@
 // IMPORTS
 const lambda = require('../../../src/handlers/get-call-history');
 const event = require('../../../events/AmazonConnectEvent.json');
+const { expectedVanityNumber } = require('../util/constants');
 
 // TESTS
 const getCallHistoryTest = () => {    
@@ -9,7 +10,8 @@ const getCallHistoryTest = () => {
         const callbackFn = (err, data) => {
             if (err) done(err);
             try {
-                expect(data).toBeTruthy();
+                const callHistory = JSON.parse(data.body);
+                expect(callHistory[0].vanityNumber).toBe(expectedVanityNumber);
                 done();
             } catch (error) {
                 done(error);

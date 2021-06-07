@@ -1,18 +1,10 @@
-# This is the SAM template that represents the architecture of your serverless application
-# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-template-basics.html
-
-# The AWSTemplateFormatVersion identifies the capabilities of the template
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html
+# Vanity Num Generator Cloud Formation Template
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   Vanity Number Generator
 
-# Transform section specifies one or more macros that AWS CloudFormation uses to process your template
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
 Transform: AWS::Serverless-2016-10-31
 
-# Shared configuration for all resources, more in
-# https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     # The PermissionsBoundary allows users to safely develop with their function's permissions constrained
@@ -33,10 +25,10 @@ Parameters:
   ApiGatewayHttpMethod:
     Type: String
     Default: GET
+  SamBucketPolicyARN:
+    Type: String
+    Default: arn:aws:iam::345859732721:policy/SamBucketAccess
   
-
-# Resources declares the AWS resources that you want to include in the stack
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
   MyApiGateway:
     Type: AWS::Serverless::Api
@@ -66,10 +58,8 @@ Resources:
           Value: Michael
         - Key: Table Name
           Value: Vanity Numbers
-  # Each Lambda function is defined by properties:
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
-  vanitynumbergenerator:
+  vanityNumberGeneratorLambda:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: src/handlers/generate-vanity-number.generateNumberHandler
@@ -80,9 +70,9 @@ Resources:
       Timeout: 3
       Policies:
         - AWSLambdaBasicExecutionRole
-        - arn:aws:iam::345859732721:policy/SamBucketAccess
+        - !Ref SamBucketPolicyARN
 
-  insertgeneratednumbers:
+  insertGeneratedNumbersLambda:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler:  src/handlers/insert-vanity-number.insertNumberHandler
@@ -97,9 +87,9 @@ Resources:
       Policies:
         - AWSLambdaBasicExecutionRole
         - AmazonDynamoDBFullAccess
-        - arn:aws:iam::345859732721:policy/SamBucketAccess
+        - !Ref SamBucketPolicyARN
 
-  getCustomerData:
+  getCustomerDataLambda:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler:  src/handlers/check-customer-data.getCustomerDataHandler
@@ -114,9 +104,9 @@ Resources:
       Policies:
         - AWSLambdaBasicExecutionRole
         - AmazonDynamoDBFullAccess
-        - arn:aws:iam::345859732721:policy/SamBucketAccess
+        - !Ref SamBucketPolicyARN
 
-  getCallHistory:
+  getCallHistoryLambda:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler:  src/handlers/get-call-history.getCallHistoryHandler
@@ -138,18 +128,4 @@ Resources:
       Policies:
         - AWSLambdaBasicExecutionRole
         - AmazonDynamoDBFullAccess
-        - arn:aws:iam::345859732721:policy/SamBucketAccess
-        
-  # This is a Lambda function config associated with the source code: hello-from-lambda.js
-  helloFromLambdaFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: ./
-      Handler: src/handlers/hello-from-lambda.helloFromLambdaHandler
-      Runtime: nodejs10.x
-      MemorySize: 128
-      Timeout: 60
-      Description: A Lambda function that returns a static string.
-      Policies:
-        # Give Lambda basic execution Permission to the helloFromLambda
-        - AWSLambdaBasicExecutionRole
+        - !Ref SamBucketPolicyARN

@@ -3,7 +3,7 @@ const insertVanityNumberTests = require('./handlers/insert-vanity-number-test');
 const checkCustomerDataTests  = require('./handlers/check-customer-data-test');
 const getCallHistoryTests = require('./handlers/get-call-history-test');
 
-// quick/hacky way to get the environment variables for testing
+// quick/hacky way to load the environment variables for testing
 const dotenv = require('dotenv');
 dotenv.config();
 

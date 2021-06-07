@@ -1,4 +1,46 @@
-# Start from scratch starter project
+# Vanity Number Generator Serverless Application
+
+## Overview
+
+Welcome. This repository defines and deploys an AWS serverless application which will integrate with Amazon Connect to generate and store
+vanity numbers for the customers who call the number generator hotline.
+
+This application is composed of several lambda functions, an API gateway, and a DynamoDB table.
+
+Insert Architecture Diagram Here
+
+## Build and Deploy
+
+Use `sam build` to build the application\
+Use `sam deploy --guided` to deploy the application\
+(need to select the non-default answer 'y' for 'getCallHistory may not have authorization defined, Is this okay?')
+
+## Local and Automated Testing
+
+### Integration Test
+
+Integration tests are stored in `__tests__` folder\
+AWS creds are needed (run `aws configure`)
+Set up test data using the `events` folder
+
+```
+npm install
+npm run test
+```
+
+### Local Lambda Test
+
+Use `sam local invoke {{resourceName}} -e {{path/to/event.json}}
+
+Example commands:
+
+```
+sam local invoke insertGeneratedNumbersLambda -e events/AmazonConnectEvent.json
+```
+
+## Original Documentation From 'Start from scratch starter project'
+
+(use `sam init` to download the start from scratch starter project sample app)
 
 This project contains source code and supporting files for the serverless application that you created in the AWS Lambda console. You can update your application at any time by committing and pushing changes to your AWS CodeCommit or GitHub repository.
 

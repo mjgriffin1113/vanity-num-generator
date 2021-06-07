@@ -8,7 +8,7 @@
         "Channel": "VOICE",
         "ContactId": "5ca32fbd-8f92-46af-92a5-6b0f970f0efe",
         "CustomerEndpoint": {
-          "Address": "+17132912374",
+          "Address": "+17134567890",
           "Type": "TELEPHONE_NUMBER"
         },
         "InitialContactId": "5ca32fbd-8f92-46af-92a5-6b0f970f0efe",
@@ -32,7 +32,7 @@
       },
       "Parameters": {
         "attempts": "0",
-        "customerPhone" : "+7132912374",
+        "customerPhone" : "+17134567890",
         "option1": "713 option 1",
         "option2": "713 option 2",
         "option3": "713 option 3",

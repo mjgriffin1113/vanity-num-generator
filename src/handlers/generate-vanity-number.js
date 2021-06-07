@@ -83,7 +83,8 @@ function getVanityDigits (customerPhone) {
 /**
  * 
  * @param {string} customerPhone - the phone number of the caller
- * @return {string[]} - a list of 5 possible vanity numbers
+ * @return {object} - object containing customer phone, vanity number options,
+ *                    and the chosen 'best' option
  */
 function generateVanityNumber (customerPhone) {
     // generate the vanity number (duh)
