@@ -7,7 +7,7 @@ vanity numbers for the customers who call the number generator hotline.
 
 This application is composed of several lambda functions, an API gateway, and a DynamoDB table.
 
-Insert Architecture Diagram Here
+![ArchitectureDiagram](public/vanityNumGenArchDiagram.png)
 
 ## Build and Deploy
 
@@ -20,6 +20,49 @@ Go to Lambda functions in the AWS Console.\
 Function list should look something like this:
 
 ![LambdaFunctionList](public/lambdaCreateSuccess.png)
+
+Test the functions from the console (if you get `access denied` it is probably because something needs to be updated in the permissions boundary)
+
+## Connect Integration
+
+If you do not have an Amazon Connect instance in your account, you will need to create one.\
+Go to Amazon Connect -> Get Started\
+Choose your starting settings (ensure outbound and inbound calling are enabled)\
+Wait a couple minutes while instance is created
+
+Before you can enter the Amazon Connect portal, go to the Amazon Connect service in the AWS console.\
+Click on the instance alias\
+Click on Contact Flows (left menu at very bottom)\
+Add a lex bot in the Amazon Lex section if you are in a supported region and you have a bot created (will put info below)\
+Under AWS Lambda section, add the getCustomerDataLambda, vanityNumberGeneratorLambda, and insertGeneratedNumbersLambda to the instance
+
+Now you can log in to your Amazon Connect portal\
+Go to Contact Flows (under Routing on left menu)\
+Click Create New Contact Flow -> Import flow (top right)\
+Select either Vanity Number Generator No Lex or Vanity Number Generator With Lex txt file\
+(If you did not add Lex in the above step you won't be able to use it here)\
+Update the Lambda function blocks to reference the newly created/added Lambda functions\
+In order of the call flow, the Lambda functions are getCustomerDataLambda -> vanityNumberGeneratorLambda -> insertGeneratedNumbersLambda\
+Save then Publish the Contact Flow
+
+Go to Routing -> Phone Numbers -> Claim Number\
+Claim a phone number and link it to the newly created Contact Flow\
+Wait a minute for it to get set up, then call the number and get your custom vanity number options
+
+If you want to see the Call History app, go [here](https://github.com/mjgriffin1113/vf-call-history-viewer)
+
+### Deploy Issues and Troubleshooting
+
+The first time I used `sam deploy` the permissions boundary was successfully created. Now I am seeing an error:\
+`Scope ARN: arn:aws:iam::345859732721:policy/vanity-num-generator-us-east-2-PermissionsBoundary does not exist or is not attachable. (Service: AmazonIdentityManagement;Status Code: 404; Error Code:`\
+To fix this, go to IAM -> Policies -> Create Policy\
+Use the example permissions boundary template in public/permissionsBoundary.exmple.js\
+(will need to slightly modify the account number and possibly stack name based on your chosen name)
+
+After creating the policy, if you have a failed deploy in your history, you may need to delete the old stack before deploy will work.\
+Go to Cloudformation -> Stacks -> find the stack which says:
+`Stack:arn:aws:cloudformation:us-east-2:214955311292:stack/vanity-num-generator/11da80e0-c76c-11eb-8e24-0a337b461fd4 is in ROLLBACK_COMPLETE state and can not be updated`\
+Delete the stack and re-run the deploy (with defaults is fine, except for the question about get call history authorization)
 
 Verify that the API Gateway and DynamoDB table have also been successfully created/configured with desired properties.
 

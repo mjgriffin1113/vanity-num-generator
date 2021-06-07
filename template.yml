@@ -25,9 +25,6 @@ Parameters:
   ApiGatewayHttpMethod:
     Type: String
     Default: GET
-  SamBucketPolicyARN:
-    Type: String
-    Default: arn:aws:iam::345859732721:policy/SamBucketAccess
   
 Resources:
   MyApiGateway:
@@ -70,7 +67,6 @@ Resources:
       Timeout: 3
       Policies:
         - AWSLambdaBasicExecutionRole
-        - !Ref SamBucketPolicyARN
 
   insertGeneratedNumbersLambda:
     Type: 'AWS::Serverless::Function'
@@ -87,7 +83,6 @@ Resources:
       Policies:
         - AWSLambdaBasicExecutionRole
         - AmazonDynamoDBFullAccess
-        - !Ref SamBucketPolicyARN
 
   getCustomerDataLambda:
     Type: 'AWS::Serverless::Function'
@@ -104,7 +99,6 @@ Resources:
       Policies:
         - AWSLambdaBasicExecutionRole
         - AmazonDynamoDBFullAccess
-        - !Ref SamBucketPolicyARN
 
   getCallHistoryLambda:
     Type: 'AWS::Serverless::Function'
@@ -128,4 +122,3 @@ Resources:
       Policies:
         - AWSLambdaBasicExecutionRole
         - AmazonDynamoDBFullAccess
-        - !Ref SamBucketPolicyARN
