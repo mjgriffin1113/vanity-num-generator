@@ -39,7 +39,7 @@ Under AWS Lambda section, add the getCustomerDataLambda, vanityNumberGeneratorLa
 Now you can log in to your Amazon Connect portal\
 Go to Contact Flows (under Routing on left menu)\
 Click Create New Contact Flow -> Import flow (top right)\
-Select either Vanity Number Generator No Lex or Vanity Number Generator With Lex txt file\
+Select either Vanity Number Generator No Lex or Vanity Number Generator With Lex .txt file\
 (If you did not add Lex in the above step you won't be able to use it here)\
 Update the Lambda function blocks to reference the newly created/added Lambda functions\
 In order of the call flow, the Lambda functions are getCustomerDataLambda -> vanityNumberGeneratorLambda -> insertGeneratedNumbersLambda\
@@ -56,7 +56,8 @@ If you want to see the Call History app, go [here](https://github.com/mjgriffin1
 The first time I used `sam deploy` the permissions boundary was successfully created. Now I am seeing an error:\
 `Scope ARN: arn:aws:iam::345859732721:policy/vanity-num-generator-us-east-2-PermissionsBoundary does not exist or is not attachable. (Service: AmazonIdentityManagement;Status Code: 404; Error Code:`\
 To fix this, go to IAM -> Policies -> Create Policy\
-Use the example permissions boundary template in public/permissionsBoundary.exmple.js\
+Name the policy (eg: vanity-num-generator-us-east-2-PermissionsBoundary)\
+Use the example permissions boundary template in public/permissionsBoundary.example.js\
 (will need to slightly modify the account number and possibly stack name based on your chosen name)
 
 After creating the policy, if you have a failed deploy in your history, you may need to delete the old stack before deploy will work.\
