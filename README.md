@@ -11,26 +11,34 @@ Insert Architecture Diagram Here
 
 ## Build and Deploy
 
-Use `sam build` to build the application\
-Use `sam deploy --guided` to deploy the application\
-(need to select the non-default answer 'y' for 'getCallHistory may not have authorization defined, Is this okay?')
+Use `sam build` to build the application.\
+Use `sam deploy --guided` to deploy the application.\
+(need to select the non-default answer `y` for `getCallHistory may not have authorization defined, Is this okay?`)
+
+Verify that the lambda functions have been created.\
+Go to Lambda functions in the AWS Console.\
+Function list should look something like this:
+
+![LambdaFunctionList](public/lambdaCreateSuccess.png)
+
+Verify that the API Gateway and DynamoDB table have also been successfully created/configured with desired properties.
 
 ## Local and Automated Testing
 
-### Integration Test
+### Integration Testing
 
-Integration tests are stored in `__tests__` folder\
-AWS creds are needed (run `aws configure`)
-Set up test data using the `events` folder
+Integration tests are stored in `__tests__` folder.\
+AWS creds are needed (run `aws configure`).\
+Set up test data using the `events` folder.
 
 ```
 npm install
 npm run test
 ```
 
-### Local Lambda Test
+### Local Lambda Testing
 
-Use `sam local invoke {{resourceName}} -e {{path/to/event.json}}
+Use `sam local invoke {{resourceName}} -e {{path/to/event.json}}`
 
 Example commands:
 
