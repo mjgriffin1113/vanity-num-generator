@@ -61,7 +61,7 @@ Use the example permissions boundary template in public/permissionsBoundary.exam
 (will need to slightly modify the account number and possibly stack name based on your chosen name)
 
 After creating the policy, if you have a failed deploy in your history, you may need to delete the old stack before deploy will work.\
-Go to Cloudformation -> Stacks -> find the stack which says:
+Go to Cloudformation -> Stacks -> find the stack with the name from the error message:
 `Stack:arn:aws:cloudformation:us-east-2:214955311292:stack/vanity-num-generator/11da80e0-c76c-11eb-8e24-0a337b461fd4 is in ROLLBACK_COMPLETE state and can not be updated`\
 Delete the stack and re-run the deploy (with defaults is fine, except for the question about get call history authorization)
 
