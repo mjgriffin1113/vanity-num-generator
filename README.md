@@ -66,6 +66,17 @@ Delete the stack and re-run the deploy (with defaults is fine, except for the qu
 
 Verify that the API Gateway and DynamoDB table have also been successfully created/configured with desired properties.
 
+### Amazon Lex
+
+If you want to utilize Lex in the contact flow, then you will need to create a bot using Amazon Lex service\
+The bot needs to have two intents and their corresponding utterance list:
+
+- GenerateNewOptions: [too, to, two]
+- KeepExistingOptions: [won, one]
+
+Ensure `Return parameters to client` under Fulfillment section is checked for both intents\
+Build and publis the bot, and remember to add it to the contact flow settings on the Amazon Connect service (in AWS console, not AC portal)
+
 ## Local and Automated Testing
 
 ### Integration Testing
